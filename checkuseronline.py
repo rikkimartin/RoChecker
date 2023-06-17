@@ -4,11 +4,13 @@ import requests
 
 webhook_url = 'https://discord.com/api/webhooks/1119547326302793768/stcriwZkOBcVQlzGTwTpw415XPRirVkBdoE0b9sZF9u3Zi9n_QNG1RnLgTLbddVakq6v'
 
+# List of all user_ids
 user_ids = [1752117, 25013944]
 
 # Dictionary to store the previous presence state for each user
 previous_presence = {}
 
+# Infinite loop ran to continuously check all the players' presence in the user_ids list
 def monitor_players():
     while True:
         print("Loop")
@@ -16,6 +18,7 @@ def monitor_players():
         time.sleep(10)
     
 
+# TODO: Fix functionality, currently not working
 def check_presence():
     headers = {
         'Content-Type': 'application/json',
@@ -57,6 +60,7 @@ def check_presence():
     else:
         print("userPresences not found in the response.")
 
+# Retrieves a player's roblox username through RobloxAPI, with user_id as param
 def get_roblox_username(user_id):
     url = f"https://users.roblox.com/v1/users/{user_id}"
 
@@ -73,6 +77,7 @@ def get_roblox_username(user_id):
 
     return None
 
+# Retrieves a player's roblox avatar imageURL through RobloxAPI, with user_id as param
 def get_avatar_image(user_id):
     url = f"https://thumbnails.roblox.com/v1/users/avatar?userIds={user_id}&size=420x420&format=Png&isCircular=false"
 
@@ -90,12 +95,15 @@ def get_avatar_image(user_id):
 
     return None
 
+# Retrieves a player's roblox profile url in string
 def get_roblox_profile_url(user_id):
     return f"https://www.roblox.com/users/{user_id}/profile"
 
+# Retrieves a player's rolimons_profile_url in string
 def get_rolimons_profile_url(user_id):
     return f"https://www.rolimons.com/player/{user_id}"
 
+# Embeds a message that is send through the discord webhook with all of a player's information. Communicates through a post request on DiscordAPI webhook url.
 def send_message(user_id):
     username = get_roblox_username(user_id)
     data = {
