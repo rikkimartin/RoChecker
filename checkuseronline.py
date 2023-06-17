@@ -1,6 +1,6 @@
 import requests
 
-webhook_url = 'WEBHOOKURLHERE'
+webhook_url = 'https://discord.com/api/webhooks/1119547326302793768/stcriwZkOBcVQlzGTwTpw415XPRirVkBdoE0b9sZF9u3Zi9n_QNG1RnLgTLbddVakq6v'
 
 user_ids = [1752117, 25013944]
 
