@@ -16,9 +16,7 @@ def monitor_players():
         print("Loop")
         check_presence()
         time.sleep(10)
-    
 
-# TODO: Fix functionality, currently not working
 def check_presence():
     headers = {
         'Content-Type': 'application/json',
@@ -30,35 +28,19 @@ def check_presence():
     }
 
     response = requests.post('https://presence.roblox.com/v1/presence/users', headers=headers, data=json.dumps(data))
-    response_data = response.json()
-
-    # Check if the response contains userPresences
-    if "userPresences" in response_data:
-        user_presences = response_data["userPresences"]
-
-        # Check if userPresences list is not empty
-        if user_presences:
-            for user_presence in user_presences:
-                user_id = user_presence.get("userId")
-                user_presence_type = user_presence.get("userPresenceType")
-
-                if user_presence_type is not None:
-                    previous_state = previous_presence.get(user_id)
-                    if previous_state is None:
-                        # User is being tracked for the first time
-                        previous_presence[user_id] = user_presence_type
-                    else:
-                        if previous_state == 0 and user_presence_type == 1:
-                            # User went from offline to online
-                            send_message(user_id)
-
-                    previous_presence[user_id] = user_presence_type
-                else:
-                    print("User Presence Type not found in the response.")
+    if response.status_code == 200:
+        response_data = response.json()
+        presence_data = response_data.get("userPresences", [])
+        if presence_data:
+            for presence in presence_data:
+                isOnline = presence.get("userPresenceType")
+                userID = presence.get("userId")
+                if isOnline == 2:
+                    send_message(userID)
         else:
-            print("Empty userPresences list in the response.")
+            print("No presence data found")
     else:
-        print("userPresences not found in the response.")
+        print("Post request failed.")
 
 # Retrieves a player's roblox username through RobloxAPI, with user_id as param
 def get_roblox_username(user_id):
@@ -108,9 +90,9 @@ def send_message(user_id):
     username = get_roblox_username(user_id)
     data = {
     "embeds": [{
-        "title": "A limited owner is online!",
+        "title": "A limited owner is in-game!",
         "color": 14548992,
-        "description": f"**{username}** is now online! Check out their profile:",
+        "description": f"**{username}** is now in-game! Check out their profile:",
         "image": {
             "url": get_avatar_image(user_id)
         },
@@ -124,12 +106,15 @@ def send_message(user_id):
                 "name": "Rolimons Profile",
                 "value": get_rolimons_profile_url(user_id),
                 "inline": True
-            }
+            },
         ]
     }]
     }
     response = requests.post(webhook_url, json=data)
     if response.status_code != 204:
         print(f"Failed to send Discord message. Error code: {response.status_code}")
+
+
+
 
 monitor_players()
