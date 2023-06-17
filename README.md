@@ -7,4 +7,4 @@ APIs used
 * https://presence.roblox.com/docs/index.html
 * https://thumbnails.roblox.com/docs/index.html
 * https://users.roblox.com/docs/index.html
-* https://discord.com/api/
+* https://github.com/discord/discord-api-docs
