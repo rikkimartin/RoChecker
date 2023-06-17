@@ -1,3 +1,5 @@
+import json
+import time
 import requests
 
 webhook_url = 'https://discord.com/api/webhooks/1119547326302793768/stcriwZkOBcVQlzGTwTpw415XPRirVkBdoE0b9sZF9u3Zi9n_QNG1RnLgTLbddVakq6v'
@@ -6,6 +8,13 @@ user_ids = [1752117, 25013944]
 
 # Dictionary to store the previous presence state for each user
 previous_presence = {}
+
+def monitor_players():
+    while True:
+        print("Loop")
+        check_presence()
+        time.sleep(10)
+    
 
 def check_presence():
     headers = {
@@ -115,4 +124,4 @@ def send_message(user_id):
     if response.status_code != 204:
         print(f"Failed to send Discord message. Error code: {response.status_code}")
 
-send_message(1752117)
+monitor_players()
