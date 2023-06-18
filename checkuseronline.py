@@ -7,13 +7,13 @@ webhook_url = 'https://discord.com/api/webhooks/1119547326302793768/stcriwZkOBcV
 # List of all user_ids
 user_ids = [1752117, 25013944]
 
-# Dictionary to store the previous presence state for each user
-previous_presence = {}
+# Dict to check previous state
+my_dict = {}
 
 # Infinite loop ran to continuously check all the players' presence in the user_ids list
 def monitor_players():
     while True:
-        print("Loop")
+        #print("Loop")
         check_presence()
         time.sleep(10)
 
@@ -33,10 +33,14 @@ def check_presence():
         presence_data = response_data.get("userPresences", [])
         if presence_data:
             for presence in presence_data:
-                isOnline = presence.get("userPresenceType")
+                isOnline = presence.get("userPresenceType") 
                 userID = presence.get("userId")
-                if isOnline == 2:
+                previous_state = my_dict.get(userID) 
+                print(my_dict)
+                if previous_state != 2 and isOnline == 2:
+                    print("User is ingame!")
                     send_message(userID)
+                my_dict[userID] = isOnline
         else:
             print("No presence data found")
     else:
