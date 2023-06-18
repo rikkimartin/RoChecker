@@ -36,9 +36,7 @@ def check_presence():
                 isOnline = presence.get("userPresenceType") 
                 userID = presence.get("userId")
                 previous_state = my_dict.get(userID) 
-                print(my_dict)
                 if previous_state != 2 and isOnline == 2:
-                    print("User is ingame!")
                     send_message(userID)
                 my_dict[userID] = isOnline
         else:
