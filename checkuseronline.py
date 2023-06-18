@@ -21,7 +21,7 @@ def monitor_players():
         success = 0
         print("Starting online checker...")
         if isSplit == False:
-            split_length = len(user_ids) // 30 #MAX REQUEST FOR CHECK PRESENCE IS 200 PER REQUEST
+            split_length = len(user_ids) // 35 #MAX REQUEST FOR CHECK PRESENCE IS 200 PER REQUEST
             split_list = [user_ids[i:i+split_length] for i in range(0, len(user_ids), split_length)]
             isSplit = True
         for part in split_list:
@@ -31,7 +31,7 @@ def monitor_players():
             if success_check:
                 success += 1
             print("===============")
-            time.sleep(10)
+            time.sleep(20)
             counter += 1
         
         print("Total success: ", success, "out of 30")
@@ -253,7 +253,6 @@ def load_owners():
         message_two = " <- lim owners into list"
         result = message_one + str(owner_count) + message_two
         print(result)
-
 
 
 load_owners()
