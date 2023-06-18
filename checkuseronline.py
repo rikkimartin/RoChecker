@@ -24,7 +24,7 @@ def monitor_players():
     while True:
         counter = 0
         success = 0
-        startMsg = "Starting online checker on item: " + current_limited_tracking + "..."
+        startMsg = "\n====================\nStarting online checker on item: " + current_limited_tracking + "...\n====================\n"
         print(startMsg)
         send_logs(True, startMsg)
         if isSplit == False:
@@ -39,13 +39,13 @@ def monitor_players():
             if success_check:
                 success += 1
             print("===============")
-            #time.sleep(2)
+            time.sleep(2)
             counter += 1
-        successMsg = "Successful Run\nLimited Name: " + current_limited_tracking + "\n" + "Total success: " + str(success-1) + " out of 200"
+        successMsg = "\n====================\nSuccessful Run\nLimited Name: " + current_limited_tracking + "\n" + "Total success: " + str(success-1) + " out of 200\n====================\n"
         print(successMsg)
         send_logs(False, successMsg)
         print("\t Online checker cooldown...")
-        time.sleep(180)
+        time.sleep(300)
 
         # To test post errors only run once and exit()
         # exit()
