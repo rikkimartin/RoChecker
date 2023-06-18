@@ -5,6 +5,10 @@ from datetime import datetime
 
 webhook_url = 'https://discord.com/api/webhooks/1119547326302793768/stcriwZkOBcVQlzGTwTpw415XPRirVkBdoE0b9sZF9u3Zi9n_QNG1RnLgTLbddVakq6v'
 
+logs_url = 'https://discord.com/api/webhooks/1120087147903455232/nIQLLlVfCRglqcJtEPHZoyL6HdIDXag20jcMoj_5Sq_v1pFIQOzVYB9zjAwH5_5PoplF'
+
+current_limited_tracking = "SKOTN"
+
 #Currently loading SKOTN
 owner_url = "https://inventory.roblox.com/v2/assets/439945661/owners"
 
@@ -20,7 +24,9 @@ def monitor_players():
     while True:
         counter = 0
         success = 0
-        print("Starting online checker...")
+        startMsg = "Starting online checker on item: " + current_limited_tracking + "..."
+        print(startMsg)
+        send_logs(True, startMsg)
         if isSplit == False:
             split_length = len(user_ids) // 200 #MAX REQUEST FOR CHECK PRESENCE IS 200 PER REQUEST
             split_list = [user_ids[i:i+split_length] for i in range(0, len(user_ids), split_length)]
@@ -28,16 +34,18 @@ def monitor_players():
         for part in split_list:
             print("Length of list being checked: ", len(part))
             print("List count: ", counter)
-            success_check = check_presence(part)
+            unique_list = list(set(part))
+            success_check = check_presence(unique_list)
             if success_check:
                 success += 1
             print("===============")
-            time.sleep(2)
+            #time.sleep(2)
             counter += 1
-        
-        print("Total success: ", success, "out of 200")
-        print("\t Restarting online checker...")
-        time.sleep(300)
+        successMsg = "Successful Run\nLimited Name: " + current_limited_tracking + "\n" + "Total success: " + str(success-1) + " out of 200"
+        print(successMsg)
+        send_logs(False, successMsg)
+        print("\t Online checker cooldown...")
+        time.sleep(180)
 
         # To test post errors only run once and exit()
         # exit()
@@ -75,6 +83,8 @@ def check_presence(owner_list_id):
             print("No presence data found")
     else:
         print(f"Post request failed. Status code: {response.status_code}")
+        print(response.json())
+        print(owner_list_id)
         return False
     
 
@@ -180,6 +190,22 @@ def retrieve_current_time():
     timestamp = current_time.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     return timestamp  
 
+# Sends a message when the webhook runs and ends
+def send_logs(isStarting, msg):
+  if isStarting:
+    data = {
+          'content': msg
+      }
+  else:
+    data = {
+          "content": msg
+      }
+  response = requests.post(logs_url, json=data)
+  if response.status_code != 204:
+      print(f"Failed to send Discord message. Error code: {response.status_code}")
+
+  
+    
 # Embeds a message that is send through the discord webhook with all of a player's information. Communicates through a post request on DiscordAPI webhook url.
 def send_message(user_id, place_id):
     username = get_roblox_username(user_id)
@@ -248,19 +274,23 @@ def load_owners():
         params = {"limit": 100, "sortOrder": "Asc", "cursor": next_page_cursor}
         response = requests.get(owner_url, headers=ownerHeader, params=params)
         data = response.json()
+        try:
+          for item in data["data"]:
+              if item is not None and item.get("owner") is not None and item.get("updated") is not None:
+                  if item["updated"] < "2021-01-01T00:00:00.000Z":
+                      user_ids.append(item["owner"]["id"])
 
-        for item in data["data"]:
-            if item is not None and item.get("owner") is not None and item.get("updated") is not None:
-                if item["updated"] < "2021-01-01T00:00:00.000Z":
-                    user_ids.append(item["owner"]["id"])
-
-        next_page_cursor = data["nextPageCursor"]
+          next_page_cursor = data["nextPageCursor"]
+        except KeyError:
+          print(data)
+          time.sleep(5)
         
         message_one = "Loaded -> "
         owner_count = len(user_ids)
         message_two = " <- lim owners into list"
         result = message_one + str(owner_count) + message_two
         print(result)
+        #time.sleep(1)
 
 load_owners()
 monitor_players()
