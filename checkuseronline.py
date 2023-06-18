@@ -21,6 +21,7 @@ def check_presence():
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'Cookie': '.ROBLOSECURITY=_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_B5B9BCFFDC07B97884ADB97803A43BBABF22858BBD53FFEB2C87D0A330A0F9216073ADA0C4BA01CE17CB84A261DE621853C4809561B55D201F0D303D5615B7CF034B35A99189B0E7CA1E31581EE571E237E692E97BBB0520C8DF293F16AEA3ED6796B3024591DB3EA3746829E137D76F9AD2BB90B1AA2246BB94F39112790AB2C8FF74D6E5A2C3261C90539F35377C018FC27427624546FE409E2037E4515CE746635B3F9F7EF2BB6073905417E057E0BC00F3EE5F75715234A4DDB0566AF73A8F181417FC8308F2F01B729CCDEB676EE7BB04D22E8F0D3B06D96D667C7723D90873A0B7677860210E0E3E37FAB4E121CB7B7A71C0F6E8C2A2297958EBBD197B578170C152174E2C144D0F31AF222D4504B9189F4CB06D7D2165EC46809694C565591C7E38D68C3EDC2DB2C1F5E0155B1AF343A914F91C52C7A2018D4FAE9903CDA06A218830CD6106EE5EAD674F78E00146196786F5C09ED8207018C5E381E5CA50DA33C03E81247334F90B5C7245B9DC21734E'
     }
 
     data = {
@@ -35,9 +36,12 @@ def check_presence():
             for presence in presence_data:
                 isOnline = presence.get("userPresenceType") 
                 userID = presence.get("userId")
+                placeID = presence.get("placeId")
+                print(userID)
+                print(placeID)
                 previous_state = my_dict.get(userID) 
                 if previous_state != 2 and isOnline == 2:
-                    send_message(userID)
+                    send_message(userID,placeID)
                 my_dict[userID] = isOnline
         else:
             print("No presence data found")
@@ -87,8 +91,15 @@ def get_roblox_profile_url(user_id):
 def get_rolimons_profile_url(user_id):
     return f"https://www.rolimons.com/player/{user_id}"
 
+def get_place_id(placeID):
+    if placeID > 0:
+        return f"https://www.roblox.com/games/{placeID}/"
+    else:
+        return "Follows are off"
+        
+
 # Embeds a message that is send through the discord webhook with all of a player's information. Communicates through a post request on DiscordAPI webhook url.
-def send_message(user_id):
+def send_message(user_id, place_id):
     username = get_roblox_username(user_id)
     data = {
     "embeds": [{
@@ -109,6 +120,11 @@ def send_message(user_id):
                 "value": get_rolimons_profile_url(user_id),
                 "inline": True
             },
+            {
+                "name": "Game Link",
+                "value": get_place_id(place_id),
+                "inline": True
+            }
         ]
     }]
     }
