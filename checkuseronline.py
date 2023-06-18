@@ -21,7 +21,7 @@ def monitor_players():
         success = 0
         print("Starting online checker...")
         if isSplit == False:
-            split_length = len(user_ids) // 35 #MAX REQUEST FOR CHECK PRESENCE IS 200 PER REQUEST
+            split_length = len(user_ids) // 200 #MAX REQUEST FOR CHECK PRESENCE IS 200 PER REQUEST
             split_list = [user_ids[i:i+split_length] for i in range(0, len(user_ids), split_length)]
             isSplit = True
         for part in split_list:
@@ -31,15 +31,15 @@ def monitor_players():
             if success_check:
                 success += 1
             print("===============")
-            time.sleep(20)
+            time.sleep(2)
             counter += 1
         
-        print("Total success: ", success, "out of 30")
+        print("Total success: ", success, "out of 200")
         print("\t Restarting online checker...")
-        time.sleep(5)
+        time.sleep(300)
 
         # To test post errors only run once and exit()
-        exit()
+        # exit()
 
 # Checks every user_id in the list if they are in-game
 def check_presence(owner_list_id):
