@@ -1,6 +1,7 @@
 import json
 import time
 import requests
+from datetime import datetime
 
 webhook_url = 'https://discord.com/api/webhooks/1119547326302793768/stcriwZkOBcVQlzGTwTpw415XPRirVkBdoE0b9sZF9u3Zi9n_QNG1RnLgTLbddVakq6v'
 
@@ -173,6 +174,12 @@ def get_total_rap(user_id):
     
     return total_rap
 
+# Retrieves current time and reformats it to timestamp format
+def retrieve_current_time():
+    current_time = datetime.now()
+    timestamp = current_time.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    return timestamp  
+
 # Embeds a message that is send through the discord webhook with all of a player's information. Communicates through a post request on DiscordAPI webhook url.
 def send_message(user_id, place_id):
     username = get_roblox_username(user_id)
@@ -182,6 +189,7 @@ def send_message(user_id, place_id):
         "url": get_roblox_profile_url(user_id),
         "color": 14548992,
         "description": f"**{username}** is now in-game!",
+        "timestamp": retrieve_current_time(),
         "image": {
             "url": get_avatar_image(user_id)
         },
@@ -253,7 +261,6 @@ def load_owners():
         message_two = " <- lim owners into list"
         result = message_one + str(owner_count) + message_two
         print(result)
-
 
 load_owners()
 monitor_players()
