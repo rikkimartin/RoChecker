@@ -14,4 +14,5 @@ APIs used
 * https://github.com/discord/discord-api-docs
 
 > Example Embedded Message with User Data
+
 ![User Triggered Message](./demo.png)
