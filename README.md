@@ -4,6 +4,8 @@ to retrieve JSON data, and Discord API to send a POST request sending the embedd
 
 > Used for finding user's with certain limited items for roblox trading purposes
 
+> Loads users in chunks to prevent Roblox API Rate Limiting
+
 > Hosted on Discloud
 
 APIs used
